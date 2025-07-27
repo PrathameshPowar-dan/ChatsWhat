@@ -1,5 +1,7 @@
 import express from "express"
-
+import userRouter from "../src/routes/user.route.js"
 const app = express()
 
-export {app}
+app.use("./api/user", userRouter)
+
+export { app }
