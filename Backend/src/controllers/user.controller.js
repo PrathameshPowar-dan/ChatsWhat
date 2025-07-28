@@ -71,20 +71,19 @@ export const LoginUser = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Credentials are INVALID");
     }
 
-    const GenerateTokens = async (userId) => {
-        try {
-            const user = await User.findById(userId)
-            const Token = user.generateToken();
-            await user.save({ validateBeforeSave: false })
-            return { Token }
-        } catch (error) {
-            throw new ApiError(500, "ERROR WHILE GENERATING TOKEN")
-        }
-    }
+    const Token = user.generateToken();
 
-    const { Token } = await GenerateTokens(user._id)
+    const LoggedIN = await User.findById(user._id).select("-password");
 
-    const LoggedIN = await User.findById(user._id).select("-password -Token")
+    return res
+        .status(200)
+        .cookie("Token", Token, options)
+        .json(new ApiResponse(200, LoggedIN, "Logged in Successfully"));
+});
 
-    return res.status(201).cookie("Token", Token, options).json(new ApiResponse(201, LoggedIN, "Logged in Successfully"))
-})
+export const LogoutUser = asyncHandler(async (req, res) => {
+    return res
+        .status(200)
+        .clearCookie("Token", options)
+        .json(new ApiResponse(200, {}, "LOGGED OUT SUCCESSFULLY"));
+});
