@@ -1,5 +1,6 @@
 import { User } from "../models/user.model";
 import { ApiError } from "../utils/ApiError"
+import { ApiResponse } from "../utils/ApiResponse";
 import { asyncHandler } from "../utils/asyncHandler"
 
 export const RegisterUser = asyncHandler(async (req, res) => {
@@ -13,12 +14,17 @@ export const RegisterUser = asyncHandler(async (req, res) => {
         }
     }
 
-    if (password.length()<7) {
-        res.send(new ApiRes)
+    if (password.length()<5) {
+        throw new ApiError(400,"Password must be atleast 6 letters")
     }
+
     const ExistingUser = await User.findOne({
         $or: [{ username }, { email }]
     })
+
+    if (ExistingUser) {
+        throw new ApiError(409,"User Already Exists")
+    }
 
 
 })
