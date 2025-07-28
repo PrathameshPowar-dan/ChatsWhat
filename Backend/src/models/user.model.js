@@ -1,5 +1,5 @@
 import mongoose, { Schema, model } from "mongoose"
-import bcrpyt from "bcrypt"
+import bcrpyt from "bcryptjs"
 import jwt from "jsonwebtoken"
 
 const userSchema = new Schema({
@@ -23,8 +23,7 @@ const userSchema = new Schema({
         required: [true, "PASSWORD IS REQUIRED"]
     },
     ProfilePic: {
-        type: String,
-        required: true
+        type: String
     }
 }, { timestamps: true })
 
@@ -44,7 +43,10 @@ userSchema.methods.generateToken = function () {
         {
             _id: this._id
         },
-        
+        process.env.JWT_SECRET_TOKEN,
+        {
+            expiresIn: "3d"
+        }
     )
 }
 
