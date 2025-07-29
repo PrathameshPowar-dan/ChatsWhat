@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { LoginUser, LogoutUser, RegisterUser } from "../controllers/user.controller.js";
+import { LoginUser, LogoutUser, RegisterUser, UpdateProfile } from "../controllers/user.controller.js";
 import AuthToken from "../middlewares/Auth.js";
 import { upload } from "../middlewares/Multer.js";
 
@@ -16,6 +16,6 @@ router.route("/register").post(
 )
 router.route("/login").post(LoginUser)
 router.route("/logout").post(LogoutUser)
-// router.put("/update-profile", AuthToken, UpdateProfile)
+router.put("/update-profile", upload.single("ProfilePic"), AuthToken, UpdateProfile)
 
 export default router

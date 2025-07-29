@@ -28,7 +28,7 @@ const UploadCloudinary = async (localFilePath, username, email, folder = "user")
             overwrite: true
         });
 
-        await fs.unlink(localFilePath); // Delete local file
+        await fs.unlink(localFilePath);
         return res;
 
     } catch (error) {

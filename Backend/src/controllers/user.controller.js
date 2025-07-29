@@ -98,23 +98,28 @@ export const LogoutUser = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, {}, "LOGGED OUT SUCCESSFULLY"));
 });
 
-// export const UpdateProfile = asyncHandler(async (req, res) => {
-//     try {
-//         const { ProfilePic } = req.body
-//         const user = req.user._id
+export const UpdateProfile = asyncHandler(async (req, res) => {
+    const ProfileLocalPath = req.file?.path
 
-//         if (!ProfilePic) {
-//             throw new ApiError(400, "Profile is Required")
-//         }
+    if (!ProfileLocalPath) {
+        throw new ApiError(400, "Profile file is MISSING!")
+    }
 
-//         const Upload = await cloudinary.uploader.upload(ProfilePic)
+    const avatar = await UploadCloudinary(ProfileLocalPath, req.user.username, req.user.email)
 
-//         const UpdatedUser = await User.findByIdAndUpdate(user._id, { ProfilePic: uploadResponse.secure_url }, { new: true })
+    if (!avatar.url) {
+        throw new ApiError(400, "Error While Uploading on Avatar")
+    }
 
-//         return res.status(201).json(
-//             new ApiResponse(201, UpdatedUser, "Profile Updated Successfully")
-//         )
-//     } catch (error) {
-//         console.log("Error while Uploading the profile", error)
-//     }
-// })
+    const user = await User.findByIdAndUpdate(
+        req.user?._id,
+        {
+            $set: {
+                ProfilePic: avatar.url
+            }
+        },
+        { new: true }
+    ).select("-password")
+
+    return res.status(200).json(new ApiResponse(200, user, "Avatar Updated Successfully"))
+})
