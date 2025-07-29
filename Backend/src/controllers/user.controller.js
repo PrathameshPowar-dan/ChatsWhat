@@ -10,8 +10,7 @@ const options = {
 }
 
 export const RegisterUser = asyncHandler(async (req, res) => {
-    const { username, email, password } = req.body
-    console.log(req.body);
+    const { username, email, password } = req.body;
 
     const requiredFields = { email, username, password };
 

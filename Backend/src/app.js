@@ -15,5 +15,6 @@ app.use(cors({
 }))
 
 app.use("/api/user", userRouter)
+app.use("/api/message", messageRouter)
 
 export { app }

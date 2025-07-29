@@ -2,19 +2,20 @@ import mongoose, { Schema, model } from "mongoose"
 
 const messageSchema = new Schema(
     {
-        sendID:{
-            type: Schema.Types.ObjectId,
-            ref:"User"
-        },
-        recieverID:{
-            type: Schema.Types.ObjectId,
-            ref:"User"
-        },
-        text:{
-            type: String,
+        sendID: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
             required: true
         },
-        images:{
+        recieverID: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            required: true
+        },
+        text: {
+            type: String
+        },
+        images: {
             type: String
         }
     }
