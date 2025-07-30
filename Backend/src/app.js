@@ -1,5 +1,6 @@
 import express from "express"
 import userRouter from "../src/routes/user.route.js"
+import messageRouter from "../src/routes/message.route.js"
 import cookieParser from "cookie-parser"
 import cors from "cors"
 const app = express()
