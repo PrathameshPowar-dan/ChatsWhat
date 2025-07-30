@@ -27,8 +27,8 @@ export const GetMessage = asyncHandler(async (req, res) => {
 
         const messages = await Message.find({
             $or: [
-                { senderID: me, recieverID: UserToChat },
-                { senderID: UserToChat, recieverID: me }
+                { senderID: me, receiverID: UserToChat },
+                { senderID: UserToChat, receiverID: me }
             ]
         })
 
@@ -38,6 +38,7 @@ export const GetMessage = asyncHandler(async (req, res) => {
         throw new ApiError(500, "Failed to fetch Messages");
     }
 });
+
 export const SendMessage = asyncHandler(async (req, res) => {
     try {
         const { text } = req.body;
@@ -66,6 +67,8 @@ export const SendMessage = asyncHandler(async (req, res) => {
             text,
             image: ImageURL
         });
+
+        await newMessage.save()
 
         return res.status(201).json(new ApiResponse(201, newMessage, "Message sent"));
     } catch (error) {
