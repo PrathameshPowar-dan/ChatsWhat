@@ -2,7 +2,7 @@ import mongoose, { Schema, model } from "mongoose"
 
 const messageSchema = new Schema(
     {
-        sendID: {
+        senderID: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",
             required: true
@@ -15,7 +15,7 @@ const messageSchema = new Schema(
         text: {
             type: String
         },
-        images: {
+        image: {
             type: String
         }
     }
@@ -25,4 +25,4 @@ const messageSchema = new Schema(
     }
 )
 
-export const Messages = model("Messages", messageSchema)
+export const Message = model("Message", messageSchema)
