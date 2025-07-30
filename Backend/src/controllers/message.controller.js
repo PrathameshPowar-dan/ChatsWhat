@@ -38,17 +38,26 @@ export const GetMessage = asyncHandler(async (req, res) => {
         throw new ApiError(500, "Failed to fetch Messages");
     }
 });
-
 export const SendMessage = asyncHandler(async (req, res) => {
     try {
-        const { text, image } = req.body;
+        const { text } = req.body;
         const { id: receiverID } = req.params;
         const senderID = req.user._id;
 
+        console.log("Sender:", senderID, "Receiver:", receiverID, "Text:", text);
+
         let ImageURL;
-        if (image) {
-            const uploadRes = await UploadMessageAttachment(image, senderID, receiverID);
-            ImageURL = uploadRes?.url;
+
+        if (req.file) {
+            const uploadRes = await UploadMessageAttachment(
+                req.file.path,
+                senderID,
+                receiverID
+            );
+            if (!uploadRes?.url) {
+                throw new ApiError(400, "Image upload failed");
+            }
+            ImageURL = uploadRes.url;
         }
 
         const newMessage = await Message.create({
@@ -60,6 +69,7 @@ export const SendMessage = asyncHandler(async (req, res) => {
 
         return res.status(201).json(new ApiResponse(201, newMessage, "Message sent"));
     } catch (error) {
-        throw new ApiError(500, "Failed Loading Messages")
+        console.error("Message send failed:", error);
+        throw new ApiError(500, "Failed Loading Messages");
     }
 });
