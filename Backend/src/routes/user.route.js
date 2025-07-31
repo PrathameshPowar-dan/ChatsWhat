@@ -17,5 +17,6 @@ router.route("/register").post(
 router.route("/login").post(LoginUser)
 router.route("/logout").post(LogoutUser)
 router.put("/update-profile", upload.single("ProfilePic"), AuthToken, UpdateProfile)
+router.get("/check", AuthToken, CheckAuth)
 
 export default router

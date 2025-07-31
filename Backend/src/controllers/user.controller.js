@@ -2,7 +2,7 @@ import { User } from "../models/user.model.js";
 import { ApiError } from "../utils/ApiError.js"
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js"
-import {UploadCloudinary} from "../utils/Cloudinary.js";
+import { UploadCloudinary } from "../utils/Cloudinary.js";
 
 const options = {
     httpOnly: true,
@@ -38,7 +38,7 @@ export const RegisterUser = asyncHandler(async (req, res) => {
         throw new ApiError(400, "Profile pic is Required")
     }
 
-    const ProfilePic = await UploadCloudinary(ProfileLocalPath, username , email)
+    const ProfilePic = await UploadCloudinary(ProfileLocalPath, username, email)
 
     const user = await User.create({
         email,
@@ -121,4 +121,13 @@ export const UpdateProfile = asyncHandler(async (req, res) => {
     ).select("-password")
 
     return res.status(200).json(new ApiResponse(200, user, "Avatar Updated Successfully"))
+})
+
+export const checkAuth = asyncHandler(async (req, res) => {
+    try {
+        res.status(200).json(new ApiResponse(200, req.user, "User is Authenticated"));
+    } catch (error) {
+        console.log("Error in checkAuth controller", error.message);
+        throw new ApiError(500, "Internal Server Error");
+    }
 })
