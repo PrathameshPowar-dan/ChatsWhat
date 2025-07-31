@@ -7,16 +7,8 @@ export default defineConfig({
   plugins: [react(),
   tailwindcss()
   ],
+  server: {
+    host: true,
+    port: 5173
+  }
 })
-
-// tailwind.config.js
-module.exports = {
-  theme: {
-    extend: {
-      colors: {
-        'newblue': '#101828',
-      },
-    },
-  },
-  plugins: [],
-};
