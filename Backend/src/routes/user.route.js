@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { LoginUser, LogoutUser, RegisterUser, UpdateProfile } from "../controllers/user.controller.js";
+import { checkAuth, LoginUser, LogoutUser, RegisterUser, UpdateProfile } from "../controllers/user.controller.js";
 import AuthToken from "../middlewares/Auth.js";
 import { upload } from "../middlewares/Multer.js";
 
@@ -17,6 +17,6 @@ router.route("/register").post(
 router.route("/login").post(LoginUser)
 router.route("/logout").post(LogoutUser)
 router.put("/update-profile", upload.single("ProfilePic"), AuthToken, UpdateProfile)
-router.get("/check", AuthToken, CheckAuth)
+router.get("/check", AuthToken, checkAuth)
 
 export default router

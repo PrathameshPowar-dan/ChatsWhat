@@ -125,7 +125,8 @@ export const UpdateProfile = asyncHandler(async (req, res) => {
 
 export const checkAuth = asyncHandler(async (req, res) => {
     try {
-        res.status(200).json(new ApiResponse(200, req.user, "User is Authenticated"));
+        data = req.user;
+        res.status(200).json(new ApiResponse(200, data, "User is Authenticated"));
     } catch (error) {
         console.log("Error in checkAuth controller", error.message);
         throw new ApiError(500, "Internal Server Error");
