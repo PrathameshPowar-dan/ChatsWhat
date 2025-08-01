@@ -6,7 +6,8 @@ import { UploadCloudinary } from "../utils/Cloudinary.js";
 
 const options = {
     httpOnly: true,
-    secure: true
+    secure: false,
+    sameSite: "lax"
 }
 
 export const RegisterUser = asyncHandler(async (req, res) => {
@@ -47,28 +48,31 @@ export const RegisterUser = asyncHandler(async (req, res) => {
         ProfilePic: ProfilePic.url
     });
 
+    const Token = user.generateToken();
+
     const CreatedUser = await User.findById(user._id).select("-password")
 
     if (!CreatedUser) {
         throw new ApiError(500, "Something went wrong creating User")
     }
 
-    return res.status(201).json(
-        new ApiResponse(201, CreatedUser, "User Registered Successfully")
-    )
+    return res
+        .status(200)
+        .cookie("Token", Token, options)
+        .json(
+            new ApiResponse(200, CreatedUser, "User Registered Successfully")
+        )
 
 })
 
 export const LoginUser = asyncHandler(async (req, res) => {
-    const { username, email, password } = req.body;
+    const { email, password } = req.body;
 
-    if (!password || !(username || email)) {
-        throw new ApiError(400, "Username or Email and Password are required");
+    if (!password || !email) {
+        throw new ApiError(400, "Email and Password are required");
     }
 
-    const user = await User.findOne({
-        $or: [{ email }, { username }]
-    });
+    const user = await User.findOne({ email });
 
     if (!user) {
         throw new ApiError(400, "User does not exist");
