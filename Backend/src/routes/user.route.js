@@ -6,12 +6,7 @@ import { upload } from "../middlewares/Multer.js";
 const router = Router()
 
 router.route("/register").post(
-    upload.fields([
-        {
-            name: "ProfilePic",
-            maxCount: 1
-        }
-    ]),
+    upload.single("ProfilePic"),
     RegisterUser
 )
 router.route("/login").post(LoginUser)
