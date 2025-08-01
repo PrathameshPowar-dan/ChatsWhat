@@ -1,4 +1,5 @@
-import { React, useState } from 'react'
+import { React, useState, useRef } from 'react'
+import { FaPlus } from "react-icons/fa";
 
 const SignUpPage = () => {
   const [ShowPASSWORD, setShowPASSWORD] = useState(false)
@@ -17,6 +18,25 @@ const SignUpPage = () => {
   //   e.preventDefault();
   // }
 
+  const [preview, setPreview] = useState(null);
+  const fileInputRef = useRef(null);
+  const [fileUpload, setfileUpload] = useState(false)
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file && file.type.startsWith("image/")) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+    setfileUpload(true);
+  };
+
+  const handleClick = () => {
+    fileInputRef.current.click();
+  };
 
 
 
@@ -33,17 +53,38 @@ const SignUpPage = () => {
               Create an account
             </h1>
             <form class="space-y-4 md:space-y-4" action="#">
+              <div className="flex justify-center mb-4">
+                <div className="relative">
+                  {/* Image Preview */}
+                  <img
+                    src={preview || "./profile.png"}
+                    alt="Profile Preview"
+                    className="w-24 h-24 rounded-full object-cover border-2 border-gray-300 dark:border-gray-600"
+                    onClick={handleClick}
+                  />
+
+                  {/* Plus Icon */}
+                  <div
+                    onClick={handleClick}
+                    style={{ display: fileUpload ? 'none' : 'block' }}
+                    className="add absolute bottom-[38px] right-[38px] bg-purple-600 p-1 rounded-full cursor-pointer hover:bg-purple-700"
+                  >
+                    <FaPlus className="text-white text-xs" />
+                  </div>
+
+                  {/* Hidden File Input */}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    ref={fileInputRef}
+                    onChange={handleImageChange}
+                    className="hidden"
+                  />
+                </div>
+              </div>
               <div>
-                <label for="profilePic" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Profile Picture</label>
-                <input
-                  type="file"
-                  name="profilePic"
-                  id="profilePic"
-                  accept="image/*"
-                  class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-                  required
-                />
-                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">PNG, JPG, JPEG (Max 2MB)</p>
+                <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Username *</label>
+                <input type="text" name="username" id="username" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Your Username" required="" />
               </div>
               <div>
                 <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your email</label>
