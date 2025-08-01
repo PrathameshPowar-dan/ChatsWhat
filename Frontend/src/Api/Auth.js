@@ -44,10 +44,21 @@ export const useAuthStore = create((set) => ({
             set({ authUser: response.data });
         } catch (error) {
             console.log("Error in SignUp:", error);
-            toast.error("Signup failed. Upload Profile Picture and Check details. " );
+            toast.error("Signup failed. Upload Profile Picture and Check details. ");
             set({ authUser: null });
         } finally {
             set({ isSigningUp: false });
+        }
+    },
+
+    LogOut: async () => {
+        try {
+            await axiosInstance.post("/user/logout");
+            set({ authUser: null });
+            toast.success("Logout successful!");
+        } catch (error) {
+            console.log("Error in LogOut:", error);
+            toast.error("Logout failed.");
         }
     }
 

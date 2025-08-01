@@ -3,9 +3,9 @@ import React from 'react'
 const LoginPage = () => {
     return (
         <>
-            <div className="w-full h-[100vh] flex flex-col items-center justify-center">
+            <div className="w-full h-[100vh] flex flex-col items-center mt-5 px-6 py-8 mx-auto md:h-screen lg:py-0">
                 <form className="md:w-96 w-80 flex flex-col items-center justify-center dark:bg-gray-800 p-8 rounded-2xl">
-                    <h2 className="text-4xl text-indigo-500 font-medium mb-5">User <span className='text-gray-50'>Login</span></h2>
+                    <h2 className="text-4xl text-purple-600 font-medium mb-5">User <span className='text-gray-50'>Login</span></h2>
 
                     <div className="flex items-center w-full bg-transparent border border-gray-300 h-12 rounded-full overflow-hidden pl-6 gap-2">
                         <svg width="16" height="11" viewBox="0 0 16 11" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -25,7 +25,7 @@ const LoginPage = () => {
                         <a className="text-sm underline" href="#">Forgot password?</a>
                     </div>
 
-                    <button type="submit" className="mt-8 w-full h-11 rounded-full text-white font-medium bg-indigo-500 hover:opacity-90 transition-opacity">
+                    <button type="submit" className="mt-8 w-full h-11 rounded-full text-white font-medium bg-purple-600 hover:opacity-90 transition-opacity">
                         Login
                     </button>
                     <p className="text-gray-500/90 text-sm mt-4">Don't have an account? <a className="text-indigo-400 hover:underline" href="/signup">Sign up</a></p>
