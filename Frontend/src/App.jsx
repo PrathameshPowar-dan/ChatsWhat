@@ -4,7 +4,7 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import LoginPage from './Pages/LoginPage.jsx'
 import HomePage from './Pages/HomePage.jsx'
 import SignUpPage from './Pages/SignUpPage.jsx'
-import SettingsPage from './Pages/SettingsPage.jsx'
+import AboutPage from './Pages/me.jsx';
 import ProfilePage from './Pages/ProfilePage.jsx'
 import { useAuthStore } from './Api/Auth.js'
 import { Loader } from "lucide-react"
@@ -33,7 +33,7 @@ const App = () => {
         <Route path="/" element={authUser ? <HomePage /> : <Navigate to="/login" />} />
         <Route path="/signup" element={!authUser ? <SignUpPage /> : <Navigate to="/" />} />
         <Route path="/login" element={!authUser ? <LoginPage /> : <Navigate to="/" />} />
-        <Route path="/settings" element={authUser ? <SettingsPage /> : <Navigate to="/login" />} />
+        <Route path="/about" element={<AboutPage />} />
         <Route path="/profile" element={authUser ? <ProfilePage /> : <Navigate to="/login" />} />
       </Routes>
 

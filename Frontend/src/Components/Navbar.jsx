@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuthStore } from "../Api/Auth";
-import { IoMdSettings, IoMdLogOut } from "react-icons/io";
+import { IoMdLogOut } from "react-icons/io";
 import { CgProfile } from "react-icons/cg";
 import { HiMenuAlt3 } from "react-icons/hi";
 import { RxCross2 } from "react-icons/rx";
+import { FcAbout } from "react-icons/fc";
 
 const Navbar = () => {
   const { LogOut, authUser } = useAuthStore();
@@ -25,11 +26,11 @@ const Navbar = () => {
         {/* Desktop Nav */}
         <div className="hidden md:flex items-center gap-4">
           <Link
-            to="/settings"
+            to="/about"
             className="text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-white"
-            title="Settings"
+            title="About me"
           >
-            <IoMdSettings size={24} />
+            <FcAbout size={24} />
           </Link>
 
           {authUser && (
@@ -70,10 +71,10 @@ const Navbar = () => {
       >
         <div className={`space-y-3 ${mobileMenuOpen ? "opacity-100" : "opacity-0"} transition-opacity duration-300 delay-100`}>
           <Link
-            to="/settings"
+            to="/about"
             className="flex items-center mt-3 gap-2 text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-white"
           >
-            <IoMdSettings size={20} color="white" /> Settings
+            <FcAbout size={20} color="white" /> About me
           </Link>
 
           {authUser && (
@@ -82,13 +83,13 @@ const Navbar = () => {
                 to="/profile"
                 className="flex items-center gap-2 text-gray-700  dark:text-gray-300 hover:text-purple-600 dark:hover:text-white"
               >
-                <CgProfile size={24} className="bg-purple-600 text-white rounded-2xl pt-0.5 pb-0.5 px-1" /> Profile
+                <CgProfile size={20} className="bg-purple-600 text-white rounded-full pt-0.5 pb-0.5 px-1" /> Profile
               </Link>
               <button
                 onClick={LogOut}
                 className="flex items-center gap-2 text-gray-700 dark:text-red-500 hover:text-purple-600 dark:hover:text-red-600"
               >
-                <IoMdLogOut size={20} /> Logout
+                <IoMdLogOut size={20} color="red" /> Logout
               </button>
             </>
           )}
