@@ -136,3 +136,57 @@ export const checkAuth = asyncHandler(async (req, res) => {
         throw new ApiError(500, "Internal Server Error");
     }
 })
+
+export const UpdateAccountDetails = asyncHandler(async (req, res) => {
+  const { username, email } = req.body;
+
+  if (!username?.trim() && !email?.trim()) {
+    throw new ApiError(400, "At least one field (username or email) is required");
+  }
+
+  const updateFields = {};
+
+  // Validate and prepare username
+  if (username?.trim()) {
+    updateFields.username = username.toLowerCase();
+
+    const usernameExists = await User.findOne({
+      username: updateFields.username,
+      _id: { $ne: req.user._id }, // exclude self
+    });
+
+    if (usernameExists) {
+      throw new ApiError(409, "Username is already in use");
+    }
+  }
+
+  // Validate and prepare email
+  if (email?.trim()) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      throw new ApiError(400, "Invalid email format");
+    }
+
+    const emailExists = await User.findOne({
+      email,
+      _id: { $ne: req.user._id }, // exclude self
+    });
+
+    if (emailExists) {
+      throw new ApiError(409, "Email is already in use");
+    }
+
+    updateFields.email = email;
+  }
+
+  const updatedUser = await User.findByIdAndUpdate(
+    req.user._id,
+    updateFields,
+    { new: true, runValidators: true }
+  ).select("-password");
+
+  return res.status(200).json(
+    new ApiResponse(200, updatedUser, "Account details updated successfully")
+  );
+});
+

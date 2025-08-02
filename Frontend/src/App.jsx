@@ -23,6 +23,8 @@ const App = () => {
     </div>
   )
 
+  console.log("Auth User:", authUser);
+
 
   return (
     <>

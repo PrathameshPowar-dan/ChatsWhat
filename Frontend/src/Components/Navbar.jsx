@@ -64,33 +64,37 @@ const Navbar = () => {
       </div>
 
       {/* Mobile Dropdown */}
-      {mobileMenuOpen && (
-        <div className="md:hidden px-4 pb-4 space-y-3 border-t dark:border-gray-700">
+      <div
+        className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${mobileMenuOpen ? "max-h-60 px-4 pb-4 border-t dark:border-gray-700" : "max-h-0 px-4 pb-0 border-none"
+          }`}
+      >
+        <div className={`space-y-3 ${mobileMenuOpen ? "opacity-100" : "opacity-0"} transition-opacity duration-300 delay-100`}>
           <Link
             to="/settings"
             className="flex items-center mt-3 gap-2 text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-white"
           >
-            <IoMdSettings size={20} /> Settings
+            <IoMdSettings size={20} color="white" /> Settings
           </Link>
 
           {authUser && (
             <>
               <Link
                 to="/profile"
-                className="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-white"
+                className="flex items-center gap-2 text-gray-700  dark:text-gray-300 hover:text-purple-600 dark:hover:text-white"
               >
-                <CgProfile size={20} /> Profile
+                <CgProfile size={24} className="bg-purple-600 text-white rounded-2xl pt-0.5 pb-0.5 px-1" /> Profile
               </Link>
               <button
                 onClick={LogOut}
-                className="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-purple-600 dark:hover:text-white"
+                className="flex items-center gap-2 text-gray-700 dark:text-red-500 hover:text-purple-600 dark:hover:text-red-600"
               >
                 <IoMdLogOut size={20} /> Logout
               </button>
             </>
           )}
         </div>
-      )}
+      </div>
+
     </nav>
   );
 };
