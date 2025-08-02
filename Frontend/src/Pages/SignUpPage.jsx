@@ -100,7 +100,6 @@ const SignUpPage = () => {
                       }`}
 
                     onClick={handleClick}
-                    onChange={() => setformDATA({ ...formDATA, ProfilePic: preview })}
                   />
                   {showProfilePicError && (
                     <p className="absolute bottom-[-20px] text-xs text-red-500 text-center mt-1">Profile is required</p>

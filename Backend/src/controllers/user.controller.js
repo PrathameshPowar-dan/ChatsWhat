@@ -33,7 +33,7 @@ export const RegisterUser = asyncHandler(async (req, res) => {
         throw new ApiError(409, "User Already Exists")
     }
 
-    const ProfileLocalPath = req.files?.ProfilePic[0]?.path;
+    const ProfileLocalPath = req.file?.path;
 
     if (!ProfileLocalPath) {
         throw new ApiError(400, "Profile pic is Required")
