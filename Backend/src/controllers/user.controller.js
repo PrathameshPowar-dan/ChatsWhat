@@ -3,6 +3,7 @@ import { ApiError } from "../utils/ApiError.js"
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js"
 import { UploadCloudinary } from "../utils/Cloudinary.js";
+import { v2 as cloudinary } from 'cloudinary';
 
 const options = {
     httpOnly: true,
@@ -45,7 +46,8 @@ export const RegisterUser = asyncHandler(async (req, res) => {
         email,
         password,
         username: username.toLowerCase(),
-        ProfilePic: ProfilePic.url
+        ProfilePic: ProfilePic.url,
+        ProfilePicId: ProfilePic.public_id
     });
 
     const Token = user.generateToken();
@@ -144,49 +146,67 @@ export const UpdateAccountDetails = asyncHandler(async (req, res) => {
     throw new ApiError(400, "At least one field (username or email) is required");
   }
 
-  const updateFields = {};
+  const user = await User.findById(req.user._id);
+  if (!user) {
+    throw new ApiError(404, "User not found");
+  }
 
-  // Validate and prepare username
-  if (username?.trim()) {
-    updateFields.username = username.toLowerCase();
+  const isUsernameChanged = username && username !== user.username;
+  const isEmailChanged = email && email !== user.email;
 
-    const usernameExists = await User.findOne({
-      username: updateFields.username,
-      _id: { $ne: req.user._id }, // exclude self
+  // Validate and check conflicts before updating
+  if (isUsernameChanged) {
+    const existingUsername = await User.findOne({
+      username: username.toLowerCase(),
+      _id: { $ne: req.user._id }
     });
-
-    if (usernameExists) {
+    if (existingUsername) {
       throw new ApiError(409, "Username is already in use");
     }
   }
 
-  // Validate and prepare email
-  if (email?.trim()) {
+  if (isEmailChanged) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       throw new ApiError(400, "Invalid email format");
     }
 
-    const emailExists = await User.findOne({
+    const existingEmail = await User.findOne({
       email,
-      _id: { $ne: req.user._id }, // exclude self
+      _id: { $ne: req.user._id }
     });
-
-    if (emailExists) {
+    if (existingEmail) {
       throw new ApiError(409, "Email is already in use");
     }
-
-    updateFields.email = email;
   }
 
-  const updatedUser = await User.findByIdAndUpdate(
-    req.user._id,
-    updateFields,
-    { new: true, runValidators: true }
-  ).select("-password");
+  // If either changed, rename cloudinary image
+  if ((isUsernameChanged || isEmailChanged) && user.ProfilePicId) {
+    const safeUsername = username || user.username;
+    const safeEmail = (email || user.email).replace(/[@.]/g, "_");
+    const newPublicId = `user/${safeUsername}-${safeEmail}`;
+
+    try {
+      await cloudinary.uploader.rename(user.ProfilePicId, newPublicId);
+      user.ProfilePicId = newPublicId;
+      user.ProfilePic = `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload/${newPublicId}`;
+    } catch (error) {
+      console.error("Cloudinary rename failed:", error.message);
+      throw new ApiError(500, "Failed to rename Cloudinary image");
+    }
+  }
+
+  // Update fields
+  if (isUsernameChanged) user.username = username.toLowerCase();
+  if (isEmailChanged) user.email = email;
+
+  await user.save();
+
+  const updatedUser = await User.findById(user._id).select("-password");
 
   return res.status(200).json(
     new ApiResponse(200, updatedUser, "Account details updated successfully")
   );
 });
+
 

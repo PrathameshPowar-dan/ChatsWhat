@@ -103,6 +103,22 @@ export const useAuthStore = create((set) => ({
         } finally {
             set({ isUpdatingProfile: false });
         }
-    }
+    },
 
+    UpdateAccountDetails: async (formDATA) => {
+        set({ isUpdatingProfile: true });
+        try {
+            const response = await axiosInstance.patch("/user/update-details", formDATA, {
+                withCredentials: true,
+            });
+
+            set({ authUser: response.data.data });
+            toast.success("Account details updated successfully!");
+        } catch (error) {
+            console.log("Error in UpdateAccountDetails:", error);
+            toast.error("Failed to update account details.");
+        } finally {
+            set({ isUpdatingProfile: false });
+        }
+    }
 }));

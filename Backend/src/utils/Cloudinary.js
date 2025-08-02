@@ -25,7 +25,10 @@ const UploadCloudinary = async (localFilePath, username, email, folder = "user")
         const res = await cloudinary.uploader.upload(localFilePath, {
             resource_type: "image",
             public_id: `${folder}/${customFileName}`,
+            use_filename: true,
+            unique_filename: false,
             overwrite: true
+
         });
 
         await fs.unlink(localFilePath);
