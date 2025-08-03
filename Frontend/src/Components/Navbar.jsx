@@ -12,7 +12,7 @@ const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <nav className="bg-white border-b border-gray-200 dark:bg-gray-900 dark:border-gray-800">
+    <nav className="bg-white border-b border-gray-300 dark:bg-gray-900 dark:border-gray-400">
       <div className="max-w-screen-xl flex items-center justify-between mx-auto p-4">
         {/* Logo */}
         <Link
