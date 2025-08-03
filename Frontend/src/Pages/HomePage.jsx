@@ -1,5 +1,5 @@
 import React from 'react'
-import { ChatStore } from '../Api/chat';
+import { ChatStore } from '../Api/Chat';
 import Sidebar from '../Components/Sidebar.jsx';
 import NoChatSelected from '../Components/NoChatSelected.jsx';
 import ChatContainer from '../Components/ChatContainer.jsx';
