@@ -1,12 +1,24 @@
 import React from 'react'
-import './LoginPage.css'
+import { ChatStore } from '../Api/chat';
+import Sidebar from '../Components/Sidebar.jsx';
+import NoChatSelected from '../Components/NoChatSelected.jsx';
+import ChatContainer from '../Components/ChatContainer.jsx';
 
 const HomePage = () => {
+  const { selectedUser } = ChatStore();
   return (
-    <>
-      i am a HOME PAGE
-    </>
-  )
-}
+    <div className="h-[calc(99vh-63px)]  -white flex overflow-hidden">
+      {/* Sidebar */}
+      <div className="max-w-xs h-full">
+        <Sidebar />
+      </div>
 
-export default HomePage
+      {/* Main Chat Area */}
+      
+        {!selectedUser ? <NoChatSelected /> : <ChatContainer />}
+
+    </div>
+  );
+};
+
+export default HomePage;

@@ -94,7 +94,7 @@ const SignUpPage = () => {
                 {!fileUpload && (
                   <div
                     onClick={handleClick}
-                    className="absolute bottom-[30px] right-[30px] bg-purple-600 p-1 rounded-full cursor-pointer hover:bg-purple-700"
+                    className="absolute bottom-[30px] md:bottom-[38px] right-[30px] md:right-[38px] bg-purple-600 p-1 rounded-full cursor-pointer hover:bg-purple-700"
                   >
                     <FaPlus className="text-white text-xs" />
                   </div>

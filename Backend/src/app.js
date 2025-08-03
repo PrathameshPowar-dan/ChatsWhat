@@ -13,8 +13,8 @@ app.use(cookieParser())
 
 app.use(cors({
     origin: "http://localhost:5173",
-    withCredentials: true,
-    credentials: true
+    credentials: true,
+    exposedHeaders: ['set-cookie']
 }))
 
 app.use("/api/user", userRouter)
