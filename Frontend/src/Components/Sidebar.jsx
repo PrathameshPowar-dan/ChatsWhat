@@ -13,28 +13,46 @@ const Sidebar = () => {
   if (isUsersLoading) return <SidebarBone />;
 
   return (
-    <aside className="h-full w-[70px] sm:w-[90px] md:w-[15vw] border-r border-gray-500">
-      {/* Header */}
-      <div className="border-b border-gray-300 w-full p-4 flex justify-center items-center">
-        <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 text-center">
-          <Users color='#9810fa' className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-black" />
-          <span className="font-medium text-white text-sm hidden lg:block">Contacts</span>
+    <aside className="h-full w-[70px] xs:w-[80px] sm:w-[90px] md:w-[220px] lg:w-[250px] border-r border-gray-600 bg-gray-800">
+      {/* Header - Collapsed on mobile */}
+      <div className="border-b border-gray-600 w-full p-2 sm:p-3 flex justify-center sm:justify-start items-center">
+        <div className="flex items-center gap-2">
+          <Users className="w-5 h-5 sm:w-6 sm:h-6 text-purple-500" />
+          <span className="font-medium text-white text-sm hidden md:block">Contacts</span>
         </div>
       </div>
 
       {/* User List */}
-      <div className="overflow-y-auto w-full py-3">
+      <div className="overflow-y-auto h-[calc(100%-56px)] w-full">
         {users.map(user => (
           <button
             key={user._id}
-            className={`w-full flex justify-center items-center hover:bg-slate-700 gap-2 px-2 py-2 ${selectedUser === user._id ? 'bg-slate-800' : 'bg-transparent'
-              }`}
-            onClick={() => setSelectedUser(user._id)}
+            className={`w-full flex justify-center items-center hover:bg-gray-700 transition-colors gap-2 p-2 sm:p-3
+              ${selectedUser?._id === user._id ? 'bg-gray-700 border-l-4 border-purple-500' : 'bg-transparent'}`}
+            onClick={() => setSelectedUser(user)}
           >
-            <img src={user.ProfilePic} alt={user.name} className="w-10 h-10 rounded-full" />
-            <div className="flex-1 hidden lg:block text-left min-w-0">
-              <h4 className="font-bold text-purple-600 truncate">{user.username}</h4>
-              <p className="text-sm text-gray-400 font-bold truncate">{ActiveUsers.includes(user._id) ? "Online" : "Offline"}</p>
+            {/* Avatar with online indicator */}
+            <div className="relative">
+              <img 
+                src={user.ProfilePic} 
+                alt={user.username} 
+                className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover"
+              />
+              <span className={`absolute bottom-0 right-0 block size-2 sm:size-2.5 rounded-full border-2 border-gray-800
+                ${ActiveUsers.includes(user._id) ? 'bg-green-400' : 'bg-gray-500'}`}
+              />
+            </div>
+
+            {/* User info - hidden on smallest screens */}
+            <div className="hidden sm:block flex-1 min-w-0 text-left ml-2">
+              <h4 className="font-medium text-white truncate text-sm sm:text-base">
+                {user.username}
+              </h4>
+              <p className={`text-xs sm:text-sm truncate ${
+                ActiveUsers.includes(user._id) ? 'text-green-400' : 'text-gray-400'
+              }`}>
+                {ActiveUsers.includes(user._id) ? "Online" : "Offline"}
+              </p>
             </div>
           </button>
         ))}
