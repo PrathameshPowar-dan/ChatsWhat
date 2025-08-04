@@ -5,11 +5,13 @@ import { asyncHandler } from "../utils/asyncHandler.js"
 import { UploadCloudinary } from "../utils/Cloudinary.js";
 import { v2 as cloudinary } from 'cloudinary';
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 const options = {
   maxAge: 7 * 24 * 60 * 60 * 1000,
   httpOnly: true,
-  secure: false,
-  sameSite: "Lax"
+  sameSite: "strict",
+  secure: isProduction,
 }
 
 export const RegisterUser = asyncHandler(async (req, res) => {
