@@ -23,6 +23,8 @@ app.use(cors({
 // Routes
 app.use("/api/user", userRouter);
 app.use("/api/message", messageRouter);
+// In app.js
+app.get('/health', (req, res) => res.status(200).send('OK'));
 
 // Production setup
 if (process.env.NODE_ENV === "production") {

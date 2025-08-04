@@ -3,7 +3,9 @@ import { axiosInstance } from "../Library/axios.js";
 import toast from "react-hot-toast";
 import { io } from "socket.io-client";
 
-const SOCKET_URL = import.meta.env.MODE === "development" ? "http://localhost:7000/api" : "/"
+const SOCKET_URL = import.meta.env.MODE === "development"
+    ? "http://localhost:7000"
+    : window.location.origin; // Use current origin in production
 
 export const useAuthStore = create((set, get) => ({
     authUser: null,
@@ -138,9 +140,12 @@ export const useAuthStore = create((set, get) => ({
         if (!authUser || get().socket?.connected) return; // Don't connect if not authenticated
 
         const socket = io(SOCKET_URL, {
+            path: "/socket.io",
             query: {
                 userId: authUser._id
-            }
+            },
+            transports: ['websocket'],
+            secure: import.meta.env.MODE === "production",
         });
         socket.connect();
         set({ socket: socket });
