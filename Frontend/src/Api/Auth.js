@@ -1,19 +1,25 @@
 import { create } from "zustand";
 import { axiosInstance } from "../Library/axios.js";
 import toast from "react-hot-toast";
+import { io } from "socket.io-client";
 
-export const useAuthStore = create((set) => ({
+const SOCKET_URL = "http://localhost:7000"; // Define your socket URL here
+
+export const useAuthStore = create((set, get) => ({
     authUser: null,
     isSigningUp: false,
     isLoggingIn: false,
     isUpdatingProfile: false,
     isCheckingAuth: true,
+    socket: null,
+    ActiveUsers: [],
 
 
     CheckAuth: async () => {
         try {
             const response = await axiosInstance.get("/user/check");
             set({ authUser: response.data.data });
+            get().connectSocket();  // Call connectSocket after checking auth
         } catch (error) {
             console.log("Error in CheckAuth:", error);
             set({ authUser: null });
@@ -42,6 +48,8 @@ export const useAuthStore = create((set) => ({
 
             toast.success("Signup successful!");
             set({ authUser: response.data.data });
+
+            get().connectSocket();  // Call connectSocket after successful signup
         } catch (error) {
             console.log("Error in SignUp:", error);
             toast.error("Signup failed. Upload Profile Picture and Check details. ");
@@ -57,6 +65,8 @@ export const useAuthStore = create((set) => ({
             const response = await axiosInstance.post("/user/login", formDATA);
             set({ authUser: response.data.data });
             toast.success("Login successful!");
+
+            get().connectSocket();  // Call connectSocket after successful login
         } catch (error) {
             console.log("Error in Login:", error);
             toast.error("Login failed. Check your credentials.");
@@ -71,13 +81,14 @@ export const useAuthStore = create((set) => ({
             await axiosInstance.post("/user/logout");
             set({ authUser: null });
             toast.success("Logout successful!");
+            get().disconnectSocket();  // Call disconnectSocket after logout
         } catch (error) {
             console.log("Error in LogOut:", error);
             toast.error("Logout failed.");
         }
     },
-    
-    UpdateProfile: async(formDATA) => {
+
+    UpdateProfile: async (formDATA) => {
         set({ isUpdatingProfile: true });
         try {
             const formDataToSend = new FormData();
@@ -120,5 +131,25 @@ export const useAuthStore = create((set) => ({
         } finally {
             set({ isUpdatingProfile: false });
         }
-    }
+    },
+
+    connectSocket: () => {
+        const { authUser } = get();
+        if (!authUser || get().socket?.connected) return; // Don't connect if not authenticated
+
+        const socket = io(SOCKET_URL, {
+            query: {
+                userId: authUser._id
+            }
+        });
+        socket.connect();
+        set({ socket: socket });
+
+        socket.on('getActiveUsers', (activeUsers) => {
+            set({ ActiveUsers: activeUsers });
+        });
+    },
+    disconnectSocket: () => {
+        if (get().socket?.connected) get().socket.disconnect();
+    },
 }));

@@ -4,6 +4,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
 import { Message } from "../models/messages.model.js";
 import { UploadMessageAttachment } from "../utils/CloudMessage.js";
+import { getReceiverSocketId, io } from "../utils/socket.js";
 
 export const userSidebar = asyncHandler(async (req, res) => {
     try {
@@ -69,6 +70,11 @@ export const SendMessage = asyncHandler(async (req, res) => {
         });
 
         await newMessage.save()
+
+        const ReceiverSocketId = getReceiverSocketId(receiverID);
+        if (ReceiverSocketId) {
+            io.to(ReceiverSocketId).emit("newMessage", newMessage)
+        }
 
         return res.status(201).json(new ApiResponse(201, newMessage, "Message sent"));
     } catch (error) {

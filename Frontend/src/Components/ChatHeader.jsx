@@ -39,11 +39,6 @@ const ChatHeader = () => {
                                 ? 'text-green-400'
                                 : 'text-gray-400'
                             }`}>
-                            <span className={`inline-block size-1.5 sm:size-2 rounded-full ${
-                                ActiveUsers?.includes(selectedUser?._id) 
-                                    ? 'bg-green-400' 
-                                    : 'bg-gray-500'
-                            }`} />
                             {ActiveUsers?.includes(selectedUser?._id) ? "Online" : "Offline"}
                         </p>
                     </div>

@@ -2,9 +2,11 @@ import React, { useEffect } from 'react';
 import { ChatStore } from '../Api/Chat';
 import SidebarBone from './Bones/SidebarBone';
 import { Users } from 'lucide-react';
+import { useAuthStore } from '../Api/Auth';
 
 const Sidebar = () => {
-  const { ActiveUsers, GetUsers, users, selectedUser, setSelectedUser, isUsersLoading } = ChatStore();
+  const { GetUsers, users, selectedUser, setSelectedUser, isUsersLoading } = ChatStore();
+  const { ActiveUsers } = useAuthStore();
 
   useEffect(() => {
     GetUsers();

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { ChatStore } from '../Api/Chat';
 import { useAuthStore } from '../Api/Auth';
 import ChatHeader from './ChatHeader';
@@ -6,15 +6,26 @@ import MessageInput from './MessageInput';
 import NoChatSelected from './NoChatSelected';
 
 const ChatContainer = () => {
-  const { messages, selectedUser, isMessagesLoading, GetMessages } = ChatStore();
+  // All hooks must be called unconditionally at the top level
+  const { messages, selectedUser, isMessagesLoading, GetMessages, SubscribeToMessages, unSubscribeFromMessages } = ChatStore();
   const { authUser } = useAuthStore();
+  const messagesEndRef = useRef(null);
 
+  // Auto-scroll effect
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  // Subscribe to messages effect
   useEffect(() => {
     if (selectedUser && authUser) {
       GetMessages(selectedUser);
+      SubscribeToMessages();
     }
-  }, [selectedUser, authUser, GetMessages]);
+    return () => { unSubscribeFromMessages() };
+  }, [selectedUser, authUser, GetMessages, SubscribeToMessages, unSubscribeFromMessages]);
 
+  // Loading state
   if (isMessagesLoading) return (
     <div className="flex-1 flex flex-col bg-gray-800">
       <ChatHeader />
@@ -28,6 +39,7 @@ const ChatContainer = () => {
     </div>
   );
 
+  // No selected user
   if (!selectedUser) return <NoChatSelected />;
 
   return (
@@ -50,7 +62,7 @@ const ChatContainer = () => {
         </div>
       </div>
 
-      {/* Messages area with desktop-specific scrollbar styling */}
+      {/* Messages area */}
       <div className="flex-1 overflow-y-auto p-4 scrollbar-thin scrollbar-thumb-purple-600 scrollbar-track-gray-800 md:scrollbar-thumb-purple-500 md:scrollbar-track-gray-700">
         <div className="space-y-3 min-h-full">
           {messages.length > 0 ? (
@@ -60,8 +72,8 @@ const ChatContainer = () => {
                 className={`flex ${message.senderID === authUser._id ? 'justify-end' : 'justify-start'}`}
               >
                 <div className={`max-w-xs sm:max-w-md md:max-w-lg rounded-lg p-3 ${message.senderID === authUser._id
-                    ? 'bg-purple-600 text-white rounded-br-none'
-                    : 'bg-gray-700 text-white rounded-bl-none'
+                  ? 'bg-purple-600 text-white rounded-br-none'
+                  : 'bg-gray-700 text-white rounded-bl-none'
                   }`}>
                   {message.text && (
                     <div className="break-words whitespace-pre-wrap">
@@ -75,11 +87,6 @@ const ChatContainer = () => {
                         alt="Chat attachment"
                         className="max-w-full max-h-[180px] md:max-h-[240px] w-auto h-auto object-contain"
                         loading="lazy"
-                        style={{
-                          maxWidth: 'min(100%, 300px)',
-                          maxHeight: '240px',
-                          borderRadius: '0.375rem'
-                        }}
                       />
                     </div>
                   )}
@@ -97,34 +104,14 @@ const ChatContainer = () => {
               </div>
             </div>
           )}
+          {/* Empty div for auto-scrolling */}
+          <div ref={messagesEndRef} />
         </div>
       </div>
 
-      {/* Add custom scrollbar styles in your global CSS */}
-      <style jsx global>{`
-        /* For desktop browsers */
-        @media (min-width: 768px) {
-          .scrollbar-thin::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-          }
-          .scrollbar-thin::-webkit-scrollbar-track {
-            background: #2d3748; /* gray-800 */
-            border-radius: 4px;
-          }
-          .scrollbar-thin::-webkit-scrollbar-thumb {
-            background: #805ad5; /* purple-600 */
-            border-radius: 4px;
-          }
-          .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-            background: #6b46c1; /* purple-700 */
-          }
-        }
-      `}</style>
-
       <MessageInput />
     </div>
-  )
-}
+  );
+};
 
 export default ChatContainer;

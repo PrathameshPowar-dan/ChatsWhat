@@ -6,7 +6,6 @@ import JWT from "jsonwebtoken";
 const AuthToken = asyncHandler(async (req, _, next) => {
     try {
         const Token = req.cookies?.Token;
-        console.log(Token);
 
         if (!Token) {
             throw new ApiError(401, "UNAUTHORIZED ACCESS");

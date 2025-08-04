@@ -1,6 +1,7 @@
 import connectDB from "./db/index.js";
 import dotenv from "dotenv"
-import { app } from "./app.js";
+// import { app } from "./app.js";
+import { server } from "./utils/socket.js";
 
 dotenv.config({
   path: "./.env"
@@ -10,7 +11,7 @@ var port = process.env.PORT || 7000
 
 connectDB()
 .then(()=>{
-  app.listen(port,()=>{
+  server.listen(port,()=>{
     console.log('Listening at port: ',port);
   })
 })

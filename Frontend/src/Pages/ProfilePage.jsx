@@ -64,7 +64,7 @@ const ProfilePage = () => {
                 {!fileUpload && (
                   <div
                     onClick={handleClick}
-                    className="absolute bottom-[30px] right-[30px] bg-purple-600 p-1 rounded-full cursor-pointer hover:bg-purple-700"
+                    className="absolute bottom-[38px] right-[38px] bg-purple-600 p-1 rounded-full cursor-pointer hover:bg-purple-700"
                   >
                     <FaPlus className="text-white text-xs" />
                   </div>
