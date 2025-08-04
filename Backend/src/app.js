@@ -1,16 +1,16 @@
-import express from "express"
-import userRouter from "../src/routes/user.route.js"
-import messageRouter from "../src/routes/message.route.js"
-import cookieParser from "cookie-parser"
-import cors from "cors"
-import { errorHandler } from "./middlewares/errorHandler.js"
+import { app } from "./utils/socket.js"; // Import app from socket.js
+import userRouter from "../src/routes/user.route.js";
+import messageRouter from "../src/routes/message.route.js";
+import cookieParser from "cookie-parser";
+import cors from "cors";
+import { errorHandler } from "./middlewares/errorHandler.js";
 import path from "path";
-const app = express()
 
-app.use(express.json({ limit: '16kb' }))
-app.use(express.urlencoded())
-app.use(express.static("public"))
-app.use(cookieParser())
+// Middleware setup
+app.use(express.json({ limit: '16kb' }));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static("public"));
+app.use(cookieParser());
 
 const __dirname = path.resolve();
 
@@ -18,11 +18,13 @@ app.use(cors({
     origin: "http://localhost:5173",
     credentials: true,
     exposedHeaders: ['set-cookie']
-}))
+}));
 
+// Routes
 app.use("/api/user", userRouter);
 app.use("/api/message", messageRouter);
 
+// Production setup
 if (process.env.NODE_ENV === "production") {
     app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
@@ -31,6 +33,6 @@ if (process.env.NODE_ENV === "production") {
     });
 }
 
-app.use(errorHandler)
+app.use(errorHandler);
 
-export { app }
+// No need to export app since it's exported from socket.js
