@@ -12,7 +12,7 @@ app.use(express.urlencoded())
 app.use(express.static("public"))
 app.use(cookieParser())
 
-const __dirname =path.resolve();
+const __dirname = path.resolve();
 
 app.use(cors({
     origin: "http://localhost:5173",
@@ -23,11 +23,12 @@ app.use(cors({
 app.use("/api/user", userRouter);
 app.use("/api/message", messageRouter);
 
-if (process.env.NODE_ENV==="production") {
-    app.use(express.static(path.join(__dirname,"../frontend/dist")));
-    app.get("*",(req,res)=>{
-        res.sendFile(path.join(__dirname,"../frontend","dist","index.html"));
-    })
+if (process.env.NODE_ENV === "production") {
+    app.use(express.static(path.join(__dirname, "../frontend/dist")));
+
+    app.get("*", (req, res) => {
+        res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
+    });
 }
 
 app.use(errorHandler)
