@@ -3,9 +3,7 @@ import { axiosInstance } from "../Library/axios.js";
 import toast from "react-hot-toast";
 import { io } from "socket.io-client";
 
-const SOCKET_URL = import.meta.env.MODE === "development"
-    ? "http://localhost:7000"
-    : window.location.origin; // Use current origin in production
+const SOCKET_URL = import.meta.env.MODE === "development" ? "http://localhost:7000" : "/"; // Use current origin in production
 
 export const useAuthStore = create((set, get) => ({
     authUser: null,

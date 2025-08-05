@@ -1,10 +1,12 @@
-import { app } from "./utils/socket.js"; // Import app from socket.js
+import express from "express"
 import userRouter from "../src/routes/user.route.js";
 import messageRouter from "../src/routes/message.route.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import { errorHandler } from "./middlewares/errorHandler.js";
 import path from "path";
+
+const app = express()
 
 // Middleware setup
 app.use(express.json({ limit: '16kb' }));
@@ -37,5 +39,7 @@ if (process.env.NODE_ENV === "production") {
 
 
 app.use(errorHandler);
+
+export default app;
 
 // No need to export app since it's exported from socket.js
